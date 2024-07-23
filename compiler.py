@@ -28,14 +28,95 @@ class Compiler(ExpressionVisitor):
         expr_type = self.visit(ctx.expression())
         self.bytecode.append(('PRINT',))
         return None
-
-    def visitAssignStmt(self, ctx):
+    
+    def visitLiteral(self, node):
+        if isinstance(node.value, int):
+            self.bytecode.append(('PUSH', str(node.value)))
+        elif isinstance(node.value, float):
+            self.bytecode.append(('PUSH', str(node.value)))
+        elif isinstance(node.value, str):
+            self.bytecode.append(('PUSH', node.value))
+        elif isinstance(node.value, bool):
+            self.bytecode.append(('PUSH', str(int(node.value))))
+    
+    def visitDeclareStmt(self, ctx):
         var_name = ctx.IDENTIFIER().getText()
-        var_type = ctx.TYPE().getText() if ctx.TYPE() else 'int'
-        self.visit(ctx.expression())
+        var_type = ctx.TYPE().getText()
         if var_name not in self.symbol_table:
             self.symbol_table[var_name] = (self.next_var_address, var_type)
             self.next_var_address += 1
+        if ctx.expression():
+            self.visit(ctx.expression())
+            self.bytecode.append(('STORE', self.symbol_table[var_name][0], var_type))
+
+    def visitStringExpr(self, ctx):
+        value = ctx.STRING().getText()[1:-1]  # Remove quotes
+        self.bytecode.append(('PUSH', value))
+
+    def getVariableAddress(self, var_name):
+        if var_name not in self.symbol_table:
+            raise Exception(f"Undefined variable: {var_name}")
+        return self.symbol_table[var_name][0]
+
+    def visitForStmt(self, ctx):
+        start_label = self.new_label()
+        end_label = self.new_label()
+        update_label = self.new_label()
+        if ctx.forInit():
+            self.visit(ctx.forInit())
+        self.bytecode.append(('LABEL', start_label))
+        if ctx.expression():
+            self.visit(ctx.expression())
+            self.bytecode.append(('JMP_IF_FALSE', end_label))
+        self.visit(ctx.block())
+        self.bytecode.append(('LABEL', update_label))
+        if ctx.forUpdate():
+            self.visit(ctx.forUpdate())
+        self.bytecode.append(('JMP', start_label))
+        self.bytecode.append(('LABEL', end_label))
+
+    def visitForInit(self, ctx):
+        if ctx.TYPE():
+            var_type = ctx.TYPE().getText()
+            var_name = ctx.IDENTIFIER().getText()
+            self.symbol_table[var_name] = (self.current_address, var_type)
+            self.current_address += 1
+
+        self.visit(ctx.expression())
+        address = self.getVariableAddress(ctx.IDENTIFIER().getText())
+        self.bytecode.append(('STORE', str(address), var_type if ctx.TYPE() else 'unknown'))
+
+    def visitForUpdate(self, ctx):
+        var_name = ctx.IDENTIFIER().getText()
+        address = self.getVariableAddress(var_name)
+
+        if ctx.getChild(1).getText() in ['++', '--']:
+            op = 'INC' if ctx.getChild(1).getText() == '++' else 'DEC'
+            self.bytecode.append((op, str(address)))
+        elif ctx.getChild(1).getText() == '+=':
+            self.visit(ctx.expression())
+            self.bytecode.append(('LOAD', str(address)))
+            self.bytecode.append(('ADD',))
+            self.bytecode.append(('STORE', str(address)))
+        else:  # '=' case
+            self.visit(ctx.expression())
+            self.bytecode.append(('STORE', str(address)))
+            
+
+    def visitIncDecStmt(self, ctx):
+        var_name = ctx.IDENTIFIER().getText()
+        if var_name not in self.symbol_table:
+            raise Exception(f"Undefined variable: {var_name}")
+        address = self.symbol_table[var_name][0]
+        op = 'INC' if ctx.getChild(1).getText() == '++' else 'DEC'
+        self.bytecode.append((op, str(address)))
+
+    def visitAssignStmt(self, ctx):
+        var_name = ctx.IDENTIFIER().getText()
+        self.visit(ctx.expression())
+        if var_name not in self.symbol_table:
+            raise Exception(f"Undefined variable: {var_name}")
+        var_type = self.symbol_table[var_name][1]
         self.bytecode.append(('STORE', self.symbol_table[var_name][0], var_type))
 
     def visitIfStmt(self, ctx):
