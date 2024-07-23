@@ -1,0 +1,6 @@
+function hi (string a ){
+    string b = "nivi";
+    string c = b + a;
+    return c;
+}
+print hi(" world");
