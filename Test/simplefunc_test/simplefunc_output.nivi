@@ -1,0 +1,36 @@
+BYTECODE
+FUNC_DEF,hey,2
+STORE,0,string
+STORE,1,string
+LOAD,0
+LOAD,1
+ADD
+RETURN
+PUSH,"hi"
+PUSH,"hi"
+CALL,hey,2
+PRINT
+FUNC_DEF,adding,2
+STORE,0,int
+STORE,1,float
+LOAD,0
+LOAD,1
+ADD
+RETURN
+PUSH,9.2
+PUSH,9.2
+CALL,adding,2
+PRINT
+PUSH,10.7
+STORE,0,int
+LOAD,0
+PRINT
+SYMBOL_TABLE
+a,0,int
+FUNCTIONS
+hey:string a,string b
+  a,0,string
+  b,1,string
+adding:int a,float b
+  a,0,int
+  b,1,float
