@@ -1,7 +1,0 @@
-int a = 9.9;
-float b = 8;
-bool c = True;
-string d = " hello nivi!";
-
-print a +  b ;
-print c + d;
