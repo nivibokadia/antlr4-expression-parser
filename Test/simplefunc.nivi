@@ -1,6 +1,5 @@
-function hi (string a ){
-    string b = "nivi";
-    string c = b + a;
-    return c;
+function hey (string a , string b){
+    return a + b;
 }
-print hi(" world");
+
+print hey("hi","hi");
