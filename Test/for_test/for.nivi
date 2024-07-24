@@ -1,0 +1,4 @@
+int i;
+for(i = 2; i < 10; i++){
+    print i*i;
+}
