@@ -1,0 +1,14 @@
+function hey (string a , string b){
+    return a + b;
+}
+
+print hey("hi","hi");
+
+function adding (int a, float b){
+    return a + b;
+}
+
+print adding(9.2, 9.2);
+
+int a = 10.7;
+print a;
