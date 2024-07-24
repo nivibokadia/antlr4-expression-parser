@@ -12,6 +12,8 @@ statement
     | 'print' expression ';'                #printStmt
     | expression ';'                        #exprStmt
     | IDENTIFIER ('++' | '--') ';'          #incDecStmt
+    | 'goto' IDENTIFIER ';'  #gotoStmt
+    | IDENTIFIER ':' statement  #labeledStmt
     ;
 
 forInit

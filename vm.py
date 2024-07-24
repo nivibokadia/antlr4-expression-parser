@@ -236,10 +236,10 @@ class StackVM:
         raise Exception("Function end not found")
     
     def find_label(self, label):
-            for i, instr in enumerate(self.bytecode):
-                if instr[0] == 'LABEL' and instr[1] == label:
-                    return i
-            raise Exception(f"Label not found: {label}")
+        for i, instr in enumerate(self.bytecode):
+            if instr[0] == 'LABEL' and instr[1] == label:
+                return i
+        raise Exception(f"Label not found: {label}")
         
     def get_output(self):
             return self.output

@@ -58,6 +58,15 @@ class Compiler(ExpressionVisitor):
         if var_name not in self.symbol_table:
             raise Exception(f"Undefined variable: {var_name}")
         return self.symbol_table[var_name][0]
+    
+    def visitGotoStmt(self, ctx):
+        label = ctx.IDENTIFIER().getText()
+        self.bytecode.append(('JMP', label))
+
+    def visitLabeledStmt(self, ctx):
+        label = ctx.IDENTIFIER().getText()
+        self.bytecode.append(('LABEL', label))
+        self.visit(ctx.statement())
 
     def visitForStmt(self, ctx):
         start_label = self.new_label()
