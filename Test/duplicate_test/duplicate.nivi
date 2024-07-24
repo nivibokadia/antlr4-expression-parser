@@ -1,0 +1,4 @@
+int i = 9;
+float i = 10.2;
+string i = "hey";
+print i;
