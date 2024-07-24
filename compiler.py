@@ -1,5 +1,4 @@
 import sys
-import json
 from antlr4 import *
 from ExpressionLexer import ExpressionLexer
 from ExpressionParser import ExpressionParser
@@ -45,12 +44,14 @@ class Compiler(ExpressionVisitor):
         if var_name not in self.symbol_table:
             self.symbol_table[var_name] = (self.next_var_address, var_type)
             self.next_var_address += 1
+        elif var_name in self.symbol_table:
+            raise Exception("Variable with the same name already defined")
         if ctx.expression():
             self.visit(ctx.expression())
             self.bytecode.append(('STORE', self.symbol_table[var_name][0], var_type))
 
     def visitStringExpr(self, ctx):
-        value = ctx.STRING().getText()[1:-1]  # Remove quotes
+        value = ctx.STRING().getText()  # Keep the quotes
         self.bytecode.append(('PUSH', value))
 
     def getVariableAddress(self, var_name):
@@ -79,8 +80,8 @@ class Compiler(ExpressionVisitor):
         if ctx.TYPE():
             var_type = ctx.TYPE().getText()
             var_name = ctx.IDENTIFIER().getText()
-            self.symbol_table[var_name] = (self.current_address, var_type)
-            self.current_address += 1
+            self.symbol_table[var_name] = (self.next_var_address, var_type)
+            self.next_var_address += 1
 
         self.visit(ctx.expression())
         address = self.getVariableAddress(ctx.IDENTIFIER().getText())
@@ -144,20 +145,17 @@ class Compiler(ExpressionVisitor):
     def visitFuncDefStmt(self, ctx):
         func_name = ctx.IDENTIFIER().getText()
         param_list = [(p.TYPE().getText(), p.IDENTIFIER().getText()) for p in ctx.parameters().param()] if ctx.parameters() else []
-        
         old_symbol_table = self.symbol_table.copy()
         old_next_var_address = self.next_var_address
         self.symbol_table = {}
         self.next_var_address = 0
-        
-        for param_type, param_name in param_list:
-            self.symbol_table[param_name] = (self.next_var_address, param_type)
-            self.next_var_address += 1
-        
+        self.bytecode.append(('FUNC_DEF', func_name, str(len(param_list))))
+        for i, (param_type, param_name) in enumerate(param_list):
+            self.symbol_table[param_name] = (i, param_type)
+            self.bytecode.append(('STORE', str(i), param_type))
+        self.next_var_address = len(param_list)
         self.current_function = func_name
         self.functions[func_name] = (param_list, self.symbol_table.copy())
-        
-        self.bytecode.append(('FUNC_DEF', func_name, len(param_list)))
         self.visit(ctx.block())
         self.visit(ctx.expression())
         self.bytecode.append(('RETURN',))
@@ -198,11 +196,17 @@ class Compiler(ExpressionVisitor):
         op = ctx.op.text
         self.bytecode.append(('MUL' if op == '*' else 'DIV',))
 
+    def check_types(self, left_type, right_type, operation):
+        if left_type != right_type:
+            raise Exception(f"Type mismatch: Cannot perform {operation} on {left_type} and {right_type}")
+
     def visitAddSubExpr(self, ctx):
-        self.visit(ctx.expression(0))
-        self.visit(ctx.expression(1))
+        left_type = self.visit(ctx.expression(0))
+        right_type = self.visit(ctx.expression(1))
+        self.check_types(left_type, right_type, ctx.op.text)
         op = ctx.op.text
         self.bytecode.append(('ADD' if op == '+' else 'SUB',))
+        return left_type
 
     def visitComparisonExpr(self, ctx):
         self.visit(ctx.expression(0))
