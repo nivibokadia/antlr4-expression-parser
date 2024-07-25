@@ -2,13 +2,12 @@ function hey (string a , string b){
     return a + b;
 }
 
-print hey("hi","hi");
-
-function adding (int a, float b, float c){
-    print a;
-    print b; 
-    print c;
-    return a + b + c;
+function adding (int a, float b){
+    return a + b;
 }
 
-print adding(8.3, 2.4, 5.1);
+int a = 2*12;
+float b = 6;
+print a;
+print hey("hi","hi");
+print adding(adding(a,b), 2.4);
