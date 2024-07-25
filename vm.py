@@ -182,7 +182,8 @@ class StackVM:
             raise Exception(f"Function {func_name} expects {param_count} arguments, but got {num_args}")
         new_frame = StackFrame(self.pc + 1, self.memory.copy(), self.global_symbol_table.copy())
         self.frames.append(new_frame)
-        self.memory = [None] * max(param_count, len(self.memory))
+        # Extend the memory to accommodate local variables
+        self.memory.extend([None] * param_count)
         self.pc = func_start
     
         
@@ -192,8 +193,10 @@ class StackVM:
         return_value = self.pop() if self.stack else None
         frame = self.frames.pop()
         self.pc = frame.return_address
-        self.memory = frame.local_memory
-        self.global_symbol_table = frame.local_symbol_table
+        # Preserve changes to global variables
+        for var, (addr, _) in self.global_symbol_table.items():
+            if addr < len(frame.local_memory):
+                self.memory[addr] = frame.local_memory[addr]
         if return_value is not None:
             self.push(return_value)
 

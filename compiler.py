@@ -153,22 +153,20 @@ class Compiler(ExpressionVisitor):
     def visitFuncDefStmt(self, ctx):
         func_name = ctx.IDENTIFIER().getText()
         param_list = [(p.TYPE().getText(), p.IDENTIFIER().getText()) for p in ctx.parameters().param()] if ctx.parameters() else []
-        old_symbol_table = self.symbol_table.copy()
-        old_next_var_address = self.next_var_address
-        self.symbol_table = {}
-        self.next_var_address = 0
+        old_symbol_table = self.symbol_table
+        self.symbol_table = old_symbol_table.copy()  # Create a new symbol table that includes global variables
+        self.next_var_address = max(addr for addr, _ in self.symbol_table.values()) + 1 if self.symbol_table else 0
         self.bytecode.append(('FUNC_DEF', func_name, str(len(param_list))))
         for i, (param_type, param_name) in enumerate(param_list):
-            self.symbol_table[param_name] = (i, param_type)
-            self.bytecode.append(('STORE', str(i), param_type))
-        self.next_var_address = len(param_list)
+            self.symbol_table[param_name] = (self.next_var_address, param_type)
+            self.bytecode.append(('STORE', str(self.next_var_address), param_type))
+            self.next_var_address += 1
         self.current_function = func_name
         self.functions[func_name] = (param_list, self.symbol_table.copy())
         self.visit(ctx.block())
         self.visit(ctx.expression())
         self.bytecode.append(('RETURN',))
         self.symbol_table = old_symbol_table
-        self.next_var_address = old_next_var_address
         self.current_function = None
 
     def visitFunctionCallExpr(self, ctx):

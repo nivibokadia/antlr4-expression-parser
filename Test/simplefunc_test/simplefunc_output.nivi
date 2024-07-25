@@ -1,43 +1,62 @@
 BYTECODE
-FUNC_DEF,hey,2
-STORE,0,string
-STORE,1,string
-LOAD,0
-LOAD,1
-ADD
-RETURN
-FUNC_DEF,adding,2
+PUSH,15
 STORE,0,int
-STORE,1,float
-LOAD,0
-LOAD,1
+PUSH,20
+STORE,1,int
+FUNC_DEF,dino,1
+STORE,2,int
+LOAD,2
+RETURN
+FUNC_DEF,ran,2
+STORE,2,int
+STORE,3,int
+PUSH,9
+STORE,4,int
+PUSH,10
+STORE,5,int
+FUNC_DEF,hey,1
+STORE,6,int
+PUSH,9
+STORE,7,int
+LOAD,7
+LOAD,6
+ADD
+LOAD,4
 ADD
 RETURN
-PUSH,2
+LOAD,4
+LOAD,3
+ADD
+RETURN
+PUSH,3
 PUSH,12
-MUL
-STORE,0,int
-PUSH,6
-STORE,1,float
-LOAD,0
+CALL,ran,2
 PRINT
-PUSH,"hi"
-PUSH,"hi"
-CALL,hey,2
+PUSH,4
+CALL,dino,1
+CALL,hey,1
 PRINT
-PUSH,2.4
-LOAD,1
-LOAD,0
-CALL,adding,2
-CALL,adding,2
+PUSH,4
+CALL,dino,1
 PRINT
 SYMBOL_TABLE
-a,0,int
-b,1,float
+d,0,int
+e,1,int
 FUNCTIONS
-hey:string a,string b
-  a,0,string
-  b,1,string
-adding:int a,float b
-  a,0,int
-  b,1,float
+dino:int dino
+  d,0,int
+  e,1,int
+  dino,2,int
+ran:int a,int b
+  d,0,int
+  e,1,int
+  a,2,int
+  b,3,int
+hey:int x
+  d,0,int
+  e,1,int
+  a,2,int
+  b,3,int
+  sum,4,int
+  sub,5,int
+  x,6,int

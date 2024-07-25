@@ -1,13 +1,21 @@
-function hey (string a , string b){
-    return a + b;
+int d = 15;
+int e = 20;
+
+function dino(int dino){
+    return dino;
 }
 
-function adding (int a, float b){
-    return a + b;
+function ran(int a , int b){
+    int sum = 9;
+    int sub = 10;
+    function hey(int x){
+        int y = 9;
+        return y + x + sum;
+    }
+    return sum + b;
 }
 
-int a = 2*12;
-float b = 6;
-print a;
-print hey("hi","hi");
-print adding(adding(a,b), 2.4);
+print ran(12,3);
+print hey(dino(4));
+print dino(4);
+
