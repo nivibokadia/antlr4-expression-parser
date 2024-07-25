@@ -2,7 +2,7 @@ int i = 0;
 start:
     print i;
     i = i + 1;
-    if i < 5 {
+    if (i < 5) {
         goto start;
     }
 end:

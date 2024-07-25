@@ -1,0 +1,21 @@
+BYTECODE
+PUSH,9.2
+STORE,0,int
+PUSH,8
+STORE,1,float
+PUSH,False
+STORE,2,bool
+PUSH," hello nivi!"
+STORE,3,string
+LOAD,0
+LOAD,1
+ADD
+PRINT
+LOAD,3
+PRINT
+SYMBOL_TABLE
+a,0,int
+b,1,float
+c,2,bool
+d,3,string
+FUNCTIONS

@@ -154,7 +154,7 @@ class Compiler(ExpressionVisitor):
         func_name = ctx.IDENTIFIER().getText()
         param_list = [(p.TYPE().getText(), p.IDENTIFIER().getText()) for p in ctx.parameters().param()] if ctx.parameters() else []
         old_symbol_table = self.symbol_table
-        self.symbol_table = old_symbol_table.copy()  # Create a new symbol table that includes global variables
+        self.symbol_table = old_symbol_table.copy()
         self.next_var_address = max(addr for addr, _ in self.symbol_table.values()) + 1 if self.symbol_table else 0
         self.bytecode.append(('FUNC_DEF', func_name, str(len(param_list))))
         for i, (param_type, param_name) in enumerate(param_list):

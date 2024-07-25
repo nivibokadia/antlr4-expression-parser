@@ -1,0 +1,11 @@
+function hello(int a){
+    int sum = a + 10;
+    function none(int no){
+        int c = no + sum;
+        return c;
+    }
+    return sum;
+}
+
+print hello(3);
+print none(4);

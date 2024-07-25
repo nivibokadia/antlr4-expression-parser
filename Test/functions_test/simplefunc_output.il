@@ -1,0 +1,23 @@
+BYTECODE
+FUNC_DEF,dino,1
+STORE,0,int
+LOAD,0
+RETURN
+FUNC_DEF,hi,1
+STORE,0,int
+LOAD,0
+PUSH,7
+ADD
+RETURN
+PUSH,2
+CALL,hi,1
+PRINT
+PUSH,4
+CALL,dino,1
+PRINT
+SYMBOL_TABLE
+FUNCTIONS
+dino:int n
+  n,0,int
+hi:int x
+  x,0,int

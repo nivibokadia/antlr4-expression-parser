@@ -40,12 +40,12 @@ class StackVM:
         self.functions = functions
         self.global_symbol_table = symbol_table
         print("Debug: Starting execution")
-        print(f"Debug: Bytecode: {self.bytecode}")
 
         while self.pc < len(self.bytecode):
             instruction = self.bytecode[self.pc]
             op = instruction[0]
             print(f"Debug: Executing instruction {self.pc}: {instruction}")
+            
             try:
                 if op == 'PUSH':
                     value = instruction[1]
@@ -168,6 +168,7 @@ class StackVM:
                         break
                     continue
                 self.pc += 1
+                print(f"Stack state: {self.stack}")
             except Exception as e:
                 print(f"Error at PC {self.pc}, Instruction: {instruction}")
                 print(f"Stack state: {self.stack}")
@@ -186,7 +187,6 @@ class StackVM:
         self.memory.extend([None] * param_count)
         self.pc = func_start
     
-        
     def return_from_function(self):
         if not self.frames:
             raise Exception("Cannot return from top-level code")
