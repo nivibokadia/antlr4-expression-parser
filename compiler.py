@@ -112,7 +112,6 @@ class Compiler(ExpressionVisitor):
             self.visit(ctx.expression())
             self.bytecode.append(('STORE', str(address)))
             
-
     def visitIncDecStmt(self, ctx):
         var_name = ctx.IDENTIFIER().getText()
         if var_name not in self.symbol_table:
@@ -175,7 +174,7 @@ class Compiler(ExpressionVisitor):
     def visitFunctionCallExpr(self, ctx):
         func_name = ctx.IDENTIFIER().getText()
         args = ctx.arguments().expression() if ctx.arguments() else []
-        for arg in args:
+        for arg in reversed(args):
             self.visit(arg)
         self.bytecode.append(('CALL', func_name, len(args)))
 

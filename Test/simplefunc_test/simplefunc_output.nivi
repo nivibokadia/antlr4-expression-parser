@@ -10,27 +10,33 @@ PUSH,"hi"
 PUSH,"hi"
 CALL,hey,2
 PRINT
-FUNC_DEF,adding,2
+FUNC_DEF,adding,3
 STORE,0,int
 STORE,1,float
+STORE,2,float
+LOAD,0
+PRINT
+LOAD,1
+PRINT
+LOAD,2
+PRINT
 LOAD,0
 LOAD,1
 ADD
+LOAD,2
+ADD
 RETURN
-PUSH,9.2
-PUSH,9.2
-CALL,adding,2
-PRINT
-PUSH,10.7
-STORE,0,int
-LOAD,0
+PUSH,5.1
+PUSH,2.4
+PUSH,8.3
+CALL,adding,3
 PRINT
 SYMBOL_TABLE
-a,0,int
 FUNCTIONS
 hey:string a,string b
   a,0,string
   b,1,string
-adding:int a,float b
+adding:int a,float b,float c
   a,0,int
   b,1,float
+  c,2,float
