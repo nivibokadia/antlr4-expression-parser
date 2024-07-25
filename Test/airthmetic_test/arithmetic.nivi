@@ -1,7 +1,0 @@
-int b = 3;
-float a = 9.2;
-print a + b;
-print a - b;
-print a*b;
-print a/b;
-print 3+4.2*7;
