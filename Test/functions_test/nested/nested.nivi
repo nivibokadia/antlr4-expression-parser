@@ -1,0 +1,12 @@
+function A(int a){
+    return a;
+}
+
+function B(int b){
+    int c = A(4);
+    print c;
+    return c + b;
+}
+
+print B(5);
+print A(10);

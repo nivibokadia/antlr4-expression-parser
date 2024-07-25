@@ -1,5 +1,0 @@
-function hi(int x){
-    return x + 7;
-}
-
-print hi(2);

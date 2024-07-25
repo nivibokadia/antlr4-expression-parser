@@ -1,0 +1,19 @@
+BYTECODE
+PUSH,10
+STORE,0,int
+PUSH,9.5
+STORE,1,float
+FUNC_DEF,var,0
+LOAD,0
+LOAD,1
+ADD
+RETURN
+CALL,var,0
+PRINT
+SYMBOL_TABLE
+a,0,int
+b,1,float
+FUNCTIONS
+var:
+  a,0,int
+  b,1,float

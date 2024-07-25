@@ -1,0 +1,22 @@
+BYTECODE
+FUNC_DEF,hi,3
+STORE,0,int
+STORE,1,float
+STORE,2,float
+LOAD,0
+LOAD,1
+ADD
+LOAD,2
+MUL
+RETURN
+PUSH,7.9
+PUSH,5.6
+PUSH,2.5
+CALL,hi,3
+PRINT
+SYMBOL_TABLE
+FUNCTIONS
+hi:int x,float y,float z
+  x,0,int
+  y,1,float
+  z,2,float
