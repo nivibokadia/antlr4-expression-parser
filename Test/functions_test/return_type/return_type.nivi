@@ -1,0 +1,6 @@
+int function integer(int a, float b){
+    float c = a + b;
+    return c;
+}
+
+print integer(18,12.4);

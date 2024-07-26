@@ -1,0 +1,19 @@
+BYTECODE
+FUNC_DEF,int,integer,2
+STORE,0,int
+STORE,1,int
+LOAD,0
+LOAD,1
+ADD
+STORE,2,int
+LOAD,2
+RETURN
+PUSH,12
+PUSH,18
+CALL,integer,2
+PRINT,1
+SYMBOL_TABLE
+FUNCTIONS
+int integer:int a,int b
+  a,0,int
+  b,1,int

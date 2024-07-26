@@ -8,7 +8,7 @@ statement
     | 'if' '(' expression ')' '{' block '}' ('else' '{' block '}')?  #ifStmt
     | 'while' '(' expression ')' '{' block '}'   #whileStmt
     | 'for' '(' forInit? ';' expression? ';' forUpdate? ')' '{' block '}'  #forStmt
-    | 'function' IDENTIFIER '(' parameters? ')' '{' block 'return' expression';' '}'  #funcDefStmt
+    | TYPE 'function' IDENTIFIER '(' parameters? ')' '{' block 'return' expression';' '}'  #funcDefStmt
     | 'print' '('? printArguments ')'? ';'    #printStmt
     | expression ';'                        #exprStmt
     | IDENTIFIER ('++' | '--') ';'          #incDecStmt

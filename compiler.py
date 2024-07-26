@@ -211,19 +211,23 @@ class Compiler(ExpressionVisitor):
 
     def visitFuncDefStmt(self, ctx):
         func_name = ctx.IDENTIFIER().getText()
+        return_type = ctx.TYPE().getText()
         param_list = [(p.TYPE().getText(), p.IDENTIFIER().getText()) for p in ctx.parameters().param()] if ctx.parameters() else []
         old_symbol_table = self.symbol_table
         self.symbol_table = old_symbol_table.copy()
         self.next_var_address = max(addr for addr, _ in self.symbol_table.values()) + 1 if self.symbol_table else 0
-        self.bytecode.append(('FUNC_DEF', func_name, str(len(param_list))))
+        self.bytecode.append(('FUNC_DEF', return_type, func_name, str(len(param_list))))
         for i, (param_type, param_name) in enumerate(param_list):
             self.symbol_table[param_name] = (self.next_var_address, param_type)
             self.bytecode.append(('STORE', str(self.next_var_address), param_type))
             self.next_var_address += 1
         self.current_function = func_name
-        self.functions[func_name] = (param_list, self.symbol_table.copy())
+        self.functions[func_name] = (param_list, self.symbol_table.copy(), return_type)
         self.visit(ctx.block())
         self.visit(ctx.expression())
+        returned_type = self.get_expression_type(ctx.expression())
+        if returned_type != return_type:
+            raise Exception(f"Function {func_name} declares return type {return_type} but returns {returned_type}")
         self.bytecode.append(('RETURN',))
         self.symbol_table = old_symbol_table
         self.current_function = None
@@ -234,6 +238,20 @@ class Compiler(ExpressionVisitor):
         for arg in reversed(args):
             self.visit(arg)
         self.bytecode.append(('CALL', func_name, len(args)))
+        
+    def get_expression_type(self, expr):
+        if isinstance(expr, ExpressionParser.NumberExprContext):
+            return 'int' if '.' not in expr.NUMBER().getText() else 'float'
+        elif isinstance(expr, ExpressionParser.BoolExprContext):
+            return 'bool'
+        elif isinstance(expr, ExpressionParser.StringExprContext):
+            return 'string'
+        elif isinstance(expr, ExpressionParser.VariableExprContext):
+            var_name = expr.IDENTIFIER().getText()
+            if var_name in self.symbol_table:
+                return self.symbol_table[var_name][1]
+        # Add more cases for other expression types
+        return 'unknown'
 
     def visitNumberExpr(self, ctx):
         value = ctx.NUMBER().getText()
@@ -314,8 +332,9 @@ def main():
                 file.write(f"{var},{addr},{type_}\n")
             
             file.write("FUNCTIONS\n")
-            for func, (params, func_symbol_table) in functions.items():
-                file.write(f"{func}:{','.join(f'{p[0]} {p[1]}' for p in params)}\n")
+            for func, (params, func_symbol_table, return_type) in functions.items():
+                param_str = ','.join(f'{p[0]} {p[1]}' for p in params)
+                file.write(f"{return_type} {func}:{param_str}\n")
                 for var, (addr, type_) in func_symbol_table.items():
                     file.write(f"  {var},{addr},{type_}\n")
 

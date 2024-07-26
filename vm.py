@@ -1,10 +1,11 @@
 import sys
 
 class StackFrame:
-    def __init__(self, return_address, local_memory, local_symbol_table):
+    def __init__(self, return_address, local_memory, local_symbol_table, return_type):
         self.return_address = return_address
         self.local_memory = local_memory
         self.local_symbol_table = local_symbol_table
+        self.return_type = return_type
 
 class StackVM:
     def __init__(self):
@@ -200,11 +201,12 @@ class StackVM:
                 elif op == 'LABEL':
                     pass  # Labels are resolved during compilation
                 elif op == 'FUNC_DEF':
-                    func_name = instruction[1]
-                    num_params = int(instruction[2])
+                    return_type = instruction[1]
+                    func_name = instruction[2]
+                    num_params = int(instruction[3])
                     func_pc = self.pc + 1
                     func_end = self.find_func_end(self.pc)
-                    self.functions[func_name] = (func_pc, num_params, func_end)
+                    self.functions[func_name] = (func_pc, num_params, func_end, return_type)
                     self.pc = func_end + 1
                     continue
                 elif op == 'CALL':
@@ -229,12 +231,11 @@ class StackVM:
     def call_function(self, func_name, num_args):
         if func_name not in self.functions:
             raise Exception(f"Undefined function: {func_name}")
-        func_start, param_count, func_end = self.functions[func_name]
+        func_start, param_count, func_end, return_type = self.functions[func_name]
         if num_args != param_count:
             raise Exception(f"Function {func_name} expects {param_count} arguments, but got {num_args}")
-        new_frame = StackFrame(self.pc + 1, self.memory.copy(), self.global_symbol_table.copy())
+        new_frame = StackFrame(self.pc + 1, self.memory.copy(), self.global_symbol_table.copy(), return_type)
         self.frames.append(new_frame)
-        # Extend the memory to accommodate local variables
         self.memory.extend([None] * param_count)
         self.pc = func_start
     
@@ -243,13 +244,30 @@ class StackVM:
             raise Exception("Cannot return from top-level code")
         return_value = self.pop() if self.stack else None
         frame = self.frames.pop()
+        if frame.return_type != 'void':
+            if return_value is None:
+                raise Exception(f"Function with return type {frame.return_type} returned None")
+            if not self.check_type(return_value, frame.return_type):
+                raise Exception(f"Function returned {type(return_value).__name__}, expected {frame.return_type}")
         self.pc = frame.return_address
-        # Preserve changes to global variables
         for var, (addr, _) in self.global_symbol_table.items():
             if addr < len(frame.local_memory):
                 self.memory[addr] = frame.local_memory[addr]
         if return_value is not None:
             self.push(return_value)
+            
+    def check_type(self, value, expected_type):
+        if expected_type == 'int':
+            return isinstance(value, int)
+        elif expected_type == 'float':
+            return isinstance(value, float)
+        elif expected_type == 'bool':
+            return isinstance(value, bool)
+        elif expected_type == 'string':
+            return isinstance(value, str)
+        elif expected_type.endswith('[]'):
+            return isinstance(value, list)
+        return False
 
     def load_variable(self, var_name):
         if var_name in self.global_symbol_table:
@@ -328,44 +346,48 @@ class StackVM:
 
     @staticmethod
     def parse_bytecode_file(filename):
-            bytecode = []
-            symbol_table = {}
-            functions = {}
-            current_section = None
-            current_function = None
-            with open(filename, 'r') as file:
-                lines = file.readlines()
-                if not lines:
-                    raise ValueError("Empty bytecode file")
+        bytecode = []
+        symbol_table = {}
+        functions = {}
+        current_section = None
+        current_function = None
+        with open(filename, 'r') as file:
+            lines = file.readlines()
+            if not lines:
+                raise ValueError("Empty bytecode file")
 
-                for line in lines:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    elif line == "BYTECODE":
-                        current_section = "bytecode"
-                    elif line == "SYMBOL_TABLE":
-                        current_section = "symbol_table"
-                    elif line == "FUNCTIONS":
-                        current_section = "functions"
-                    elif current_section == "bytecode":
-                        bytecode.append(tuple(line.split(',')))
-                    elif current_section == "symbol_table":
-                        var, addr, type_ = line.split(',')
-                        symbol_table[var] = (int(addr), type_)
-                    elif current_section == "functions":
-                        if ':' in line:
-                            func_name, params_str = line.split(':')
-                            params = [tuple(p.split()) for p in params_str.split(',') if p]
-                            functions[func_name] = (params, {})
-                            current_function = func_name
-                        else:
-                            var, addr, type_ = line.strip().split(',')
-                            functions[current_function][1][var] = (int(addr), type_)
+            for line in lines:
+                line = line.strip()
+                if not line:
+                    continue
+                elif line == "BYTECODE":
+                    current_section = "bytecode"
+                elif line == "SYMBOL_TABLE":
+                    current_section = "symbol_table"
+                elif line == "FUNCTIONS":
+                    current_section = "functions"
+                elif current_section == "bytecode":
+                    bytecode.append(tuple(line.split(',')))
+                elif current_section == "symbol_table":
+                    var, addr, type_ = line.split(',')
+                    symbol_table[var] = (int(addr), type_)
+                elif current_section == "functions":
+                    if ':' in line:
+                        func_info, params_str = line.split(':')
+                        func_parts = func_info.split()
+                        if len(func_parts) != 2:
+                            raise ValueError(f"Invalid function definition: {line}")
+                        return_type, func_name = func_parts
+                        params = [tuple(p.split()) for p in params_str.split(',') if p]
+                        functions[func_name] = (params, {}, return_type)
+                        current_function = func_name
+                    else:
+                        var, addr, type_ = line.strip().split(',')
+                        functions[current_function][1][var] = (int(addr), type_)
 
-            if not bytecode:
-                raise ValueError("No bytecode instructions found in file")
-            return bytecode, symbol_table, functions
+        if not bytecode:
+            raise ValueError("No bytecode instructions found in file")
+        return bytecode, symbol_table, functions
 
 def main():
     if len(sys.argv) < 2:
