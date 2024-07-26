@@ -134,6 +134,24 @@ class ExpressionListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ExpressionParser#arrayPush.
+    def enterArrayPush(self, ctx:ExpressionParser.ArrayPushContext):
+        pass
+
+    # Exit a parse tree produced by ExpressionParser#arrayPush.
+    def exitArrayPush(self, ctx:ExpressionParser.ArrayPushContext):
+        pass
+
+
+    # Enter a parse tree produced by ExpressionParser#arrayPop.
+    def enterArrayPop(self, ctx:ExpressionParser.ArrayPopContext):
+        pass
+
+    # Exit a parse tree produced by ExpressionParser#arrayPop.
+    def exitArrayPop(self, ctx:ExpressionParser.ArrayPopContext):
+        pass
+
+
     # Enter a parse tree produced by ExpressionParser#printArguments.
     def enterPrintArguments(self, ctx:ExpressionParser.PrintArgumentsContext):
         pass
