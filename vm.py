@@ -131,7 +131,7 @@ class StackVM:
                 elif op == 'PRINT':
                     num_args = int(instruction[1])
                     args = [self.pop() for _ in range(num_args)]
-                    args.reverse()  # Reverse to maintain original order
+                    args.reverse()
                     output = ''.join(str(arg) for arg in args)
                     self.output.append(output)
                     print(f"Debug: Printing value: {output}")

@@ -1,0 +1,35 @@
+BYTECODE
+CREATE_ARRAY,0
+STORE_ARRAY,0,int[]
+FUNC_DEF,add,1
+STORE,1,int[]
+PUSH,0
+STORE,2,int
+PUSH,0
+STORE,2,unknown
+LABEL,label_0
+LOAD,2
+PUSH,4
+CMP,<
+JMP_IF_FALSE,label_1
+LOAD_ARRAY,1
+LOAD,2
+ARRAY_PUSH
+STORE_ARRAY,1,int[]
+LABEL,label_2
+INC,2
+JMP,label_0
+LABEL,label_1
+LOAD,2
+RETURN
+PUSH,"Counter returned: "
+LOAD,0
+CALL,add,1
+PRINT,2
+LOAD,0
+PRINT,1
+SYMBOL_TABLE
+dest,0,int[]
+FUNCTIONS
+add:int[] dest
+  dest,1,int[]
