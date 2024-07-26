@@ -79,16 +79,6 @@ class ExpressionVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExpressionParser#arrayPush.
-    def visitArrayPush(self, ctx:ExpressionParser.ArrayPushContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExpressionParser#arrayPop.
-    def visitArrayPop(self, ctx:ExpressionParser.ArrayPopContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by ExpressionParser#printArguments.
     def visitPrintArguments(self, ctx:ExpressionParser.PrintArgumentsContext):
         return self.visitChildren(ctx)

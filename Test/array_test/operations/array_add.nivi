@@ -1,0 +1,7 @@
+int[] source = [1,2,3,4];
+
+function amend(int[] source, int a) {
+    a = source[0] + source[1];
+    return a;
+}
+print(amend(source, 5));
