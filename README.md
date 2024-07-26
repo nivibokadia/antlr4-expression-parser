@@ -1,3 +1,4 @@
+WELCOME TO NIVI LANGUAGE.
 Before running the files, make sure that antlr4 is installed.
 pip install antlr4-python3-runtime                                                                       #installing runtime-antlr4
 antlr4 -Dlanguage=Python3 Expression.g4                                                                  #generating lexer and parser
