@@ -1,0 +1,7 @@
+int[] num = [2,5];
+num.push(6);
+num.push(7);
+print num;
+num.pop();
+print num;
+print("The length is: " ,num.length);
