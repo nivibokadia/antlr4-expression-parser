@@ -3,7 +3,7 @@ grammar Expression;
 program: statement+ EOF;
 
 statement
-    : TYPE IDENTIFIER ('=' expression)? ';'  #declareStmt
+    : TYPE IDENTIFIER ('=' (expression | arrayInitializer))? ';'  #declareStmt
     | IDENTIFIER '=' expression ';'          #assignStmt
     | 'if' '(' expression ')' '{' block '}' ('else' '{' block '}')?  #ifStmt
     | 'while' '(' expression ')' '{' block '}'   #whileStmt
@@ -12,8 +12,14 @@ statement
     | 'print' expression ';'                #printStmt
     | expression ';'                        #exprStmt
     | IDENTIFIER ('++' | '--') ';'          #incDecStmt
-    | 'goto' IDENTIFIER ';'  #gotoStmt
-    | IDENTIFIER ':' statement  #labeledStmt
+    | 'goto' IDENTIFIER ';'                 #gotoStmt
+    | IDENTIFIER ':' statement              #labeledStmt
+    | IDENTIFIER '.push' '(' expression ')' ';'  #arrayPushStmt
+    | IDENTIFIER '.pop' '(' ')' ';'              #arrayPopStmt
+    ;
+
+arrayInitializer
+    : '[' (expression (',' expression)*)? ']'
     ;
 
 forInit
@@ -44,14 +50,15 @@ expression
     | expression op=('=='|'!='|'<'|'>'|'<='|'>=') expression  # comparisonExpr
     | expression '&&' expression            # logicalAndExpr
     | expression '||' expression            # logicalOrExpr
+    | IDENTIFIER '[' expression ']'         # arrayAccessExpr
+    | IDENTIFIER '.length'                  # arrayLengthExpr
     ;
 
 arguments: expression (',' expression)*;
 
-TYPE: 'int' | 'float' | 'bool' | 'string';
+TYPE: 'int' | 'float' | 'bool' | 'string' | 'int[]' | 'float[]' | 'bool[]' | 'string[]';
 BOOL: 'false' | 'true';
 NUMBER: [0-9]+ ('.' [0-9]+)?;
 IDENTIFIER: [a-zA-Z_][a-zA-Z_0-9]*;
 STRING: '"' .*? '"';
 WS: [ \t\r\n]+ -> skip;
-

@@ -49,14 +49,17 @@ class StackVM:
             try:
                 if op == 'PUSH':
                     value = instruction[1]
-                    try:
-                        value = int(value)
-                    except ValueError:
+                    if value == 'None':
+                        value = 'None'
+                    else:
                         try:
-                            value = float(value)
+                            value = int(value)
                         except ValueError:
-                            pass
-                    self.push(value)
+                            try:
+                                value = float(value)
+                            except ValueError:
+                                pass
+                        self.push(value)
                 elif op == 'LOAD':
                     address = int(instruction[1])
                     self.ensure_memory_size(address)
@@ -80,6 +83,45 @@ class StackVM:
                     #self.push(value)
                     self.memory[address] = value
                     print(f"Debug: Stored {value} at address {address}")
+                elif op == 'CREATE_ARRAY':
+                    size = int(instruction[1])
+                    self.push([])
+                elif op == 'ARRAY_PUSH':
+                    value = self.pop()
+                    array = self.pop()
+                    array.append(value)
+                    self.push(array)
+                elif op == 'ARRAY_POP':
+                    array = self.pop()
+                    if not isinstance(array, list):
+                        raise Exception("Array pop operation on non-array object")
+                    if len(array) == 0:
+                        raise Exception("Cannot pop from an empty array")
+                    array.pop()
+                    self.push(array)
+                elif op == 'STORE_ARRAY':
+                    array = self.pop()
+                    address = int(instruction[1])
+                    var_type = instruction[2]
+                    self.ensure_memory_size(address)
+                    if not isinstance(array, list):
+                        raise Exception(f"Cannot store non-array value in array variable")
+                    self.memory[address] = array
+                elif op == 'LOAD_ARRAY':
+                    address = int(instruction[1])
+                    self.ensure_memory_size(address)
+                    array = self.memory[address]
+                    if not isinstance(array, list):
+                        raise Exception(f"Attempting to load non-array value as array from address {address}")
+                    self.push(array)
+                elif op == 'ARRAY_LOAD':
+                    index = self.pop()
+                    array = self.pop()
+                    if not isinstance(array, list):
+                        raise Exception("Array load operation on non-array object")
+                    if index < 0 or index >= len(array):
+                        raise Exception("Array index out of bounds")
+                    self.push(array[index])
                 elif op == 'PRINT':
                     value = self.pop()
                     self.output.append(str(value))
@@ -243,9 +285,37 @@ class StackVM:
             if instr[0] == 'LABEL' and instr[1] == label:
                 return i
         raise Exception(f"Label not found: {label}")
-        
+    
+    def create_array(self, size):
+        return [None] * size
+
+    def array_store(self):
+        value = self.pop()
+        index = self.pop()
+        array = self.pop()
+        if not isinstance(array, list):
+            raise Exception("Array store operation on non-array object")
+        if index < 0 or index >= len(array):
+            raise Exception("Array index out of bounds")
+        array[index] = value
+
+    def array_load(self):
+        index = self.pop()
+        array = self.pop()
+        if not isinstance(array, list):
+            raise Exception("Array load operation on non-array object")
+        if index < 0 or index >= len(array):
+            raise Exception("Array index out of bounds")
+        self.push(array[index])
+
+    def array_length(self):
+        array = self.pop()
+        if not isinstance(array, list):
+            raise Exception("Array length operation on non-array object")
+        self.push(len(array))
+            
     def get_output(self):
-            return self.output
+        return self.output
 
     @staticmethod
     def parse_bytecode_file(filename):

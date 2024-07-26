@@ -27,7 +27,52 @@ class Compiler(ExpressionVisitor):
         expr_type = self.visit(ctx.expression())
         self.bytecode.append(('PRINT',))
         return None
-    
+
+    def visitArrayInitializer(self, ctx):
+        elements = ctx.expression()
+        self.bytecode.append(('CREATE_ARRAY', len(elements)))
+        for expr in elements:
+            self.visit(expr)
+            self.bytecode.append(('ARRAY_PUSH',))
+
+    def visitArrayAccessExpr(self, ctx):
+        array_name = ctx.IDENTIFIER().getText()
+        if array_name not in self.symbol_table:
+            raise Exception(f"Undefined array: {array_name}")
+        array_address, array_type = self.symbol_table[array_name]
+        if not array_type.endswith('[]'):
+            raise Exception(f"Variable {array_name} is not an array")
+        self.bytecode.append(('LOAD_ARRAY', str(array_address)))
+        self.visit(ctx.expression())
+        self.bytecode.append(('ARRAY_LOAD',))
+
+    def visitArrayLengthExpr(self, ctx):
+        array_name = ctx.IDENTIFIER().getText()
+        if array_name not in self.symbol_table:
+            raise Exception(f"Undefined array: {array_name}")
+        array_address = self.symbol_table[array_name][0]
+        self.bytecode.append(('LOAD', array_address))
+        self.bytecode.append(('ARRAY_LENGTH',))
+        
+    def visitArrayPushStmt(self, ctx):
+        array_name = ctx.IDENTIFIER().getText()
+        if array_name not in self.symbol_table:
+            raise Exception(f"Undefined array: {array_name}")
+        array_address = self.symbol_table[array_name][0]
+        self.bytecode.append(('LOAD_ARRAY', str(array_address)))
+        self.visit(ctx.expression())
+        self.bytecode.append(('ARRAY_PUSH',))
+        self.bytecode.append(('STORE_ARRAY', str(array_address), self.symbol_table[array_name][1]))
+        
+    def visitArrayPopStmt(self, ctx):
+        array_name = ctx.IDENTIFIER().getText()
+        if array_name not in self.symbol_table:
+            raise Exception(f"Undefined array: {array_name}")
+        array_address = self.symbol_table[array_name][0]
+        self.bytecode.append(('LOAD_ARRAY', str(array_address)))
+        self.bytecode.append(('ARRAY_POP',))
+        self.bytecode.append(('STORE_ARRAY', str(array_address), self.symbol_table[array_name][1]))
+
     def visitLiteral(self, node):
         if isinstance(node.value, int):
             self.bytecode.append(('PUSH', str(node.value)))
@@ -41,14 +86,23 @@ class Compiler(ExpressionVisitor):
     def visitDeclareStmt(self, ctx):
         var_name = ctx.IDENTIFIER().getText()
         var_type = ctx.TYPE().getText()
+        is_array = var_type.endswith('[]')
         if var_name not in self.symbol_table:
             self.symbol_table[var_name] = (self.next_var_address, var_type)
             self.next_var_address += 1
         elif var_name in self.symbol_table:
             raise Exception("Variable with the same name already defined")
-        if ctx.expression():
+        if ctx.arrayInitializer():
+            if not is_array:
+                raise Exception(f"Cannot initialize non-array variable {var_name} with array")
+            self.visit(ctx.arrayInitializer())
+            self.bytecode.append(('STORE_ARRAY', self.symbol_table[var_name][0], var_type))
+        elif ctx.expression():
             self.visit(ctx.expression())
-            self.bytecode.append(('STORE', self.symbol_table[var_name][0], var_type))
+            if is_array:
+                self.bytecode.append(('STORE_ARRAY', self.symbol_table[var_name][0], var_type))
+            else:
+                self.bytecode.append(('STORE', self.symbol_table[var_name][0], var_type))
 
     def visitStringExpr(self, ctx):
         value = ctx.STRING().getText()  # Keep the quotes

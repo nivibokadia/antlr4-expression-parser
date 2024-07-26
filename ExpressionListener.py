@@ -116,6 +116,33 @@ class ExpressionListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ExpressionParser#arrayPushStmt.
+    def enterArrayPushStmt(self, ctx:ExpressionParser.ArrayPushStmtContext):
+        pass
+
+    # Exit a parse tree produced by ExpressionParser#arrayPushStmt.
+    def exitArrayPushStmt(self, ctx:ExpressionParser.ArrayPushStmtContext):
+        pass
+
+
+    # Enter a parse tree produced by ExpressionParser#arrayPopStmt.
+    def enterArrayPopStmt(self, ctx:ExpressionParser.ArrayPopStmtContext):
+        pass
+
+    # Exit a parse tree produced by ExpressionParser#arrayPopStmt.
+    def exitArrayPopStmt(self, ctx:ExpressionParser.ArrayPopStmtContext):
+        pass
+
+
+    # Enter a parse tree produced by ExpressionParser#arrayInitializer.
+    def enterArrayInitializer(self, ctx:ExpressionParser.ArrayInitializerContext):
+        pass
+
+    # Exit a parse tree produced by ExpressionParser#arrayInitializer.
+    def exitArrayInitializer(self, ctx:ExpressionParser.ArrayInitializerContext):
+        pass
+
+
     # Enter a parse tree produced by ExpressionParser#forInit.
     def enterForInit(self, ctx:ExpressionParser.ForInitContext):
         pass
@@ -161,33 +188,6 @@ class ExpressionListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ExpressionParser#stringExpr.
-    def enterStringExpr(self, ctx:ExpressionParser.StringExprContext):
-        pass
-
-    # Exit a parse tree produced by ExpressionParser#stringExpr.
-    def exitStringExpr(self, ctx:ExpressionParser.StringExprContext):
-        pass
-
-
-    # Enter a parse tree produced by ExpressionParser#logicalOrExpr.
-    def enterLogicalOrExpr(self, ctx:ExpressionParser.LogicalOrExprContext):
-        pass
-
-    # Exit a parse tree produced by ExpressionParser#logicalOrExpr.
-    def exitLogicalOrExpr(self, ctx:ExpressionParser.LogicalOrExprContext):
-        pass
-
-
-    # Enter a parse tree produced by ExpressionParser#variableExpr.
-    def enterVariableExpr(self, ctx:ExpressionParser.VariableExprContext):
-        pass
-
-    # Exit a parse tree produced by ExpressionParser#variableExpr.
-    def exitVariableExpr(self, ctx:ExpressionParser.VariableExprContext):
-        pass
-
-
     # Enter a parse tree produced by ExpressionParser#addSubExpr.
     def enterAddSubExpr(self, ctx:ExpressionParser.AddSubExprContext):
         pass
@@ -215,21 +215,75 @@ class ExpressionListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by ExpressionParser#functionCallExpr.
-    def enterFunctionCallExpr(self, ctx:ExpressionParser.FunctionCallExprContext):
-        pass
-
-    # Exit a parse tree produced by ExpressionParser#functionCallExpr.
-    def exitFunctionCallExpr(self, ctx:ExpressionParser.FunctionCallExprContext):
-        pass
-
-
     # Enter a parse tree produced by ExpressionParser#comparisonExpr.
     def enterComparisonExpr(self, ctx:ExpressionParser.ComparisonExprContext):
         pass
 
     # Exit a parse tree produced by ExpressionParser#comparisonExpr.
     def exitComparisonExpr(self, ctx:ExpressionParser.ComparisonExprContext):
+        pass
+
+
+    # Enter a parse tree produced by ExpressionParser#parenExpr.
+    def enterParenExpr(self, ctx:ExpressionParser.ParenExprContext):
+        pass
+
+    # Exit a parse tree produced by ExpressionParser#parenExpr.
+    def exitParenExpr(self, ctx:ExpressionParser.ParenExprContext):
+        pass
+
+
+    # Enter a parse tree produced by ExpressionParser#stringExpr.
+    def enterStringExpr(self, ctx:ExpressionParser.StringExprContext):
+        pass
+
+    # Exit a parse tree produced by ExpressionParser#stringExpr.
+    def exitStringExpr(self, ctx:ExpressionParser.StringExprContext):
+        pass
+
+
+    # Enter a parse tree produced by ExpressionParser#logicalOrExpr.
+    def enterLogicalOrExpr(self, ctx:ExpressionParser.LogicalOrExprContext):
+        pass
+
+    # Exit a parse tree produced by ExpressionParser#logicalOrExpr.
+    def exitLogicalOrExpr(self, ctx:ExpressionParser.LogicalOrExprContext):
+        pass
+
+
+    # Enter a parse tree produced by ExpressionParser#variableExpr.
+    def enterVariableExpr(self, ctx:ExpressionParser.VariableExprContext):
+        pass
+
+    # Exit a parse tree produced by ExpressionParser#variableExpr.
+    def exitVariableExpr(self, ctx:ExpressionParser.VariableExprContext):
+        pass
+
+
+    # Enter a parse tree produced by ExpressionParser#arrayLengthExpr.
+    def enterArrayLengthExpr(self, ctx:ExpressionParser.ArrayLengthExprContext):
+        pass
+
+    # Exit a parse tree produced by ExpressionParser#arrayLengthExpr.
+    def exitArrayLengthExpr(self, ctx:ExpressionParser.ArrayLengthExprContext):
+        pass
+
+
+    # Enter a parse tree produced by ExpressionParser#arrayAccessExpr.
+    def enterArrayAccessExpr(self, ctx:ExpressionParser.ArrayAccessExprContext):
+        pass
+
+    # Exit a parse tree produced by ExpressionParser#arrayAccessExpr.
+    def exitArrayAccessExpr(self, ctx:ExpressionParser.ArrayAccessExprContext):
+        pass
+
+
+    # Enter a parse tree produced by ExpressionParser#functionCallExpr.
+    def enterFunctionCallExpr(self, ctx:ExpressionParser.FunctionCallExprContext):
+        pass
+
+    # Exit a parse tree produced by ExpressionParser#functionCallExpr.
+    def exitFunctionCallExpr(self, ctx:ExpressionParser.FunctionCallExprContext):
         pass
 
 
@@ -248,15 +302,6 @@ class ExpressionListener(ParseTreeListener):
 
     # Exit a parse tree produced by ExpressionParser#mulDivExpr.
     def exitMulDivExpr(self, ctx:ExpressionParser.MulDivExprContext):
-        pass
-
-
-    # Enter a parse tree produced by ExpressionParser#parenExpr.
-    def enterParenExpr(self, ctx:ExpressionParser.ParenExprContext):
-        pass
-
-    # Exit a parse tree produced by ExpressionParser#parenExpr.
-    def exitParenExpr(self, ctx:ExpressionParser.ParenExprContext):
         pass
 
 

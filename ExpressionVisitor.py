@@ -69,6 +69,21 @@ class ExpressionVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by ExpressionParser#arrayPushStmt.
+    def visitArrayPushStmt(self, ctx:ExpressionParser.ArrayPushStmtContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ExpressionParser#arrayPopStmt.
+    def visitArrayPopStmt(self, ctx:ExpressionParser.ArrayPopStmtContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ExpressionParser#arrayInitializer.
+    def visitArrayInitializer(self, ctx:ExpressionParser.ArrayInitializerContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by ExpressionParser#forInit.
     def visitForInit(self, ctx:ExpressionParser.ForInitContext):
         return self.visitChildren(ctx)
@@ -94,21 +109,6 @@ class ExpressionVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExpressionParser#stringExpr.
-    def visitStringExpr(self, ctx:ExpressionParser.StringExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExpressionParser#logicalOrExpr.
-    def visitLogicalOrExpr(self, ctx:ExpressionParser.LogicalOrExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExpressionParser#variableExpr.
-    def visitVariableExpr(self, ctx:ExpressionParser.VariableExprContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by ExpressionParser#addSubExpr.
     def visitAddSubExpr(self, ctx:ExpressionParser.AddSubExprContext):
         return self.visitChildren(ctx)
@@ -124,13 +124,43 @@ class ExpressionVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExpressionParser#functionCallExpr.
-    def visitFunctionCallExpr(self, ctx:ExpressionParser.FunctionCallExprContext):
+    # Visit a parse tree produced by ExpressionParser#comparisonExpr.
+    def visitComparisonExpr(self, ctx:ExpressionParser.ComparisonExprContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by ExpressionParser#comparisonExpr.
-    def visitComparisonExpr(self, ctx:ExpressionParser.ComparisonExprContext):
+    # Visit a parse tree produced by ExpressionParser#parenExpr.
+    def visitParenExpr(self, ctx:ExpressionParser.ParenExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ExpressionParser#stringExpr.
+    def visitStringExpr(self, ctx:ExpressionParser.StringExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ExpressionParser#logicalOrExpr.
+    def visitLogicalOrExpr(self, ctx:ExpressionParser.LogicalOrExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ExpressionParser#variableExpr.
+    def visitVariableExpr(self, ctx:ExpressionParser.VariableExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ExpressionParser#arrayLengthExpr.
+    def visitArrayLengthExpr(self, ctx:ExpressionParser.ArrayLengthExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ExpressionParser#arrayAccessExpr.
+    def visitArrayAccessExpr(self, ctx:ExpressionParser.ArrayAccessExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by ExpressionParser#functionCallExpr.
+    def visitFunctionCallExpr(self, ctx:ExpressionParser.FunctionCallExprContext):
         return self.visitChildren(ctx)
 
 
@@ -141,11 +171,6 @@ class ExpressionVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by ExpressionParser#mulDivExpr.
     def visitMulDivExpr(self, ctx:ExpressionParser.MulDivExprContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExpressionParser#parenExpr.
-    def visitParenExpr(self, ctx:ExpressionParser.ParenExprContext):
         return self.visitChildren(ctx)
 
 
