@@ -105,7 +105,7 @@ class Compiler(ExpressionVisitor):
                 self.bytecode.append(('STORE', self.symbol_table[var_name][0], var_type))
 
     def visitStringExpr(self, ctx):
-        value = ctx.STRING().getText()  # Keep the quotes
+        value = ctx.STRING().getText()
         self.bytecode.append(('PUSH', value))
 
     def getVariableAddress(self, var_name):
@@ -162,7 +162,7 @@ class Compiler(ExpressionVisitor):
             self.bytecode.append(('LOAD', str(address)))
             self.bytecode.append(('ADD',))
             self.bytecode.append(('STORE', str(address)))
-        else:  # '=' case
+        else:  #'='case
             self.visit(ctx.expression())
             self.bytecode.append(('STORE', str(address)))
             
@@ -299,17 +299,15 @@ def main():
         bytecode, symbol_table, functions = compiler.compile(tree)
 
         with open(output_file, 'w') as file:
-            # Write bytecode
+    
             file.write("BYTECODE\n")
             for instr in bytecode:
                 file.write(','.join(map(str, instr)) + '\n')
             
-            # Write symbol table
             file.write("SYMBOL_TABLE\n")
             for var, (addr, type_) in symbol_table.items():
                 file.write(f"{var},{addr},{type_}\n")
             
-            # Write functions
             file.write("FUNCTIONS\n")
             for func, (params, func_symbol_table) in functions.items():
                 file.write(f"{func}:{','.join(f'{p[0]} {p[1]}' for p in params)}\n")
