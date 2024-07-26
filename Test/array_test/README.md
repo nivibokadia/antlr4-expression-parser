@@ -5,3 +5,4 @@ The operations supported: array.length;
                           array.push(value);
                           array.pop();
 To access a value at particular index: array[index];
+Arrays are compatible inside functions and loops
