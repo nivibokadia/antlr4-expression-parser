@@ -250,7 +250,6 @@ class Compiler(ExpressionVisitor):
             var_name = expr.IDENTIFIER().getText()
             if var_name in self.symbol_table:
                 return self.symbol_table[var_name][1]
-        # Add more cases for other expression types
         return 'unknown'
 
     def visitNumberExpr(self, ctx):

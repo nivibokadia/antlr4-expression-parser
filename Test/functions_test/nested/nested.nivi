@@ -1,8 +1,8 @@
-function A(int a){
+int function A(int a){
     return a;
 }
 
-function B(int b){
+int function B(int b){
     int c = A(4);
     print c;
     return c + b;

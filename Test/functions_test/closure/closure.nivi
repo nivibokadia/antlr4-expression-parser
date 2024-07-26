@@ -1,6 +1,6 @@
-function hello(int a){
+int function hello(int a){
     int sum = a + 10;
-    function none(int no){
+    int function none(int no){
         int c = no + sum;
         return c;
     }
