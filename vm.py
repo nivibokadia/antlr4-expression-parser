@@ -122,10 +122,19 @@ class StackVM:
                     if index < 0 or index >= len(array):
                         raise Exception("Array index out of bounds")
                     self.push(array[index])
+                elif op == 'ARRAY_LENGTH':
+                    array = self.pop()
+                    if not isinstance(array, list):
+                        raise Exception("Array load operation on non-array object")
+                    else:
+                        self.push(len(array))
                 elif op == 'PRINT':
-                    value = self.pop()
-                    self.output.append(str(value))
-                    print(f"Debug: Printing value: {value}")
+                    num_args = int(instruction[1])
+                    args = [self.pop() for _ in range(num_args)]
+                    args.reverse()  # Reverse to maintain original order
+                    output = ''.join(str(arg) for arg in args)
+                    self.output.append(output)
+                    print(f"Debug: Printing value: {output}")
                 elif op == 'ADD':
                     b, a = self.pop(), self.pop()
                     if isinstance(a, str) and isinstance(b, str):

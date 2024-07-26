@@ -24,8 +24,13 @@ class Compiler(ExpressionVisitor):
             self.visit(stmt)
             
     def visitPrintStmt(self, ctx):
-        expr_type = self.visit(ctx.expression())
-        self.bytecode.append(('PRINT',))
+        args = ctx.printArguments().printArg()
+        for arg in args:
+            if arg.expression():
+                self.visit(arg.expression())
+            else:  # It's a STRING
+                self.bytecode.append(('PUSH', arg.STRING().getText()))
+        self.bytecode.append(('PRINT', len(args)))
         return None
 
     def visitArrayInitializer(self, ctx):

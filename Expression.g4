@@ -9,13 +9,22 @@ statement
     | 'while' '(' expression ')' '{' block '}'   #whileStmt
     | 'for' '(' forInit? ';' expression? ';' forUpdate? ')' '{' block '}'  #forStmt
     | 'function' IDENTIFIER '(' parameters? ')' '{' block 'return' expression';' '}'  #funcDefStmt
-    | 'print' expression ';'                #printStmt
+    | 'print' '('? printArguments ')'? ';'    #printStmt
     | expression ';'                        #exprStmt
     | IDENTIFIER ('++' | '--') ';'          #incDecStmt
     | 'goto' IDENTIFIER ';'                 #gotoStmt
     | IDENTIFIER ':' statement              #labeledStmt
     | IDENTIFIER '.push' '(' expression ')' ';'  #arrayPushStmt
     | IDENTIFIER '.pop' '(' ')' ';'              #arrayPopStmt
+    ;
+
+printArguments
+    : printArg (',' printArg)*
+    ;
+
+printArg
+    : expression
+    | STRING
     ;
 
 arrayInitializer
