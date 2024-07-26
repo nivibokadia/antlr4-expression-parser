@@ -1,0 +1,6 @@
+int[] num = [2,5];
+function add(int[] num, int a){
+    num.push(a);
+    return a;
+}
+print add(num, 5);
